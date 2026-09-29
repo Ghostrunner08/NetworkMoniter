@@ -5,15 +5,19 @@ import time
 from datetime import datetime
 from datetime import timedelta
 
+# Init global variables
 device_name = socket.gethostname()
 connections = {}
 
+# define networkInterface to scan, use "tshark -D" to find all available interfaces
 networkInterface = '6'
 
+# print current status
 print("Network Moniter starting...")
 print("Init ReverseDNS...")
 
-def reverseDNS(ip_address):
+# define re-usable modules.
+def reverseDNS(ip_address): # reverseDNS returns the Domain Name of an IP address
     try:
         # Performs a reverse DNS lookup
         domain_name, alias, addresslist = socket.gethostbyaddr(ip_address)
@@ -21,9 +25,9 @@ def reverseDNS(ip_address):
     except socket.herror:
         return "Error: No Domain Name"
 
-print("Init psutils...")
+print("Init psutil...")
 
-def find_process(src_ip, src_port, dst_ip, dst_port):
+def find_process(src_ip, src_port, dst_ip, dst_port): # find_process is the Process Attribution module.
     for conn in psutil.net_connections(kind="inet"):
         if not conn.pid:
             continue
@@ -50,7 +54,7 @@ print("Listening for packets...\n┌──────────────�
 
 capture = pyshark.LiveCapture(interface= networkInterface)
 
-try:
+try: # Starts scanning the network interface for packets and reads info from them.
     for packet in capture.sniff_continuously():
         try:
             timestamp = packet.sniff_time.strftime("%H:%M:%S")
@@ -99,7 +103,7 @@ try:
                         remotePort = source_port
                     connection_key = (localIp, localPort, remoteIp, remotePort, protocol)                    
 
-                    if connection_key not in connections:
+                    if connection_key not in connections: # Add connection_key's to connections table if a new connection occurs
                         connections[connection_key] = {
                             "Process": process,
                             "LocalIP": localIp,
@@ -121,7 +125,7 @@ try:
                         connection["PacketsOut"] += 1
                         connection["DataOut"] += packet_size
 
-                    if srcName == "Error: No Domain Name" or dstName == "Error: No Domain Name":
+                    if srcName == "Error: No Domain Name" or dstName == "Error: No Domain Name": # Prints the packets info, may highlight if source or destination is unknown.
                         print("\033[33m")
                     print(
                         f"| [{timestamp}] |"
@@ -136,7 +140,7 @@ try:
                     if srcName == "Error: No Domain Name" or dstName == "Error: No Domain Name":
                         print("\033[0m")
 
-
+                    # Connection logging/warning logic
                     CONNECTION_TIMEOUT = timedelta(seconds=300)
                     currentTime = datetime.now()
 
