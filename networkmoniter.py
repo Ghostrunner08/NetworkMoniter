@@ -121,7 +121,7 @@ try:
                         connection["PacketsOut"] += 1
                         connection["DataOut"] += packet_size
 
-                    if srcName == "Error: No Domain Name":
+                    if srcName == "Error: No Domain Name" or dstName == "Error: No Domain Name":
                         print("\033[33m")
                     print(
                         f"| [{timestamp}] |"
@@ -133,7 +133,7 @@ try:
                         f"[{protocol}] | "
                         f"[{packetStatus}]"
                     )
-                    if srcName == "Error: No Domain Name":
+                    if srcName == "Error: No Domain Name" or dstName == "Error: No Domain Name":
                         print("\033[0m")
 
 
