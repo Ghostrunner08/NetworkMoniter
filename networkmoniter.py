@@ -8,6 +8,8 @@ from datetime import timedelta
 device_name = socket.gethostname()
 connections = {}
 
+networkInterface = '6'
+
 print("Network Moniter starting...")
 print("Init ReverseDNS...")
 
@@ -46,7 +48,7 @@ def find_process(src_ip, src_port, dst_ip, dst_port):
 
 print("Listening for packets...\n┌──────────────────────────────────────────────────────┐")
 
-capture = pyshark.LiveCapture(interface= '6')
+capture = pyshark.LiveCapture(interface= networkInterface)
 
 try:
     for packet in capture.sniff_continuously():

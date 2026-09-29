@@ -22,6 +22,13 @@ Python 3.X
 WireShark / Tshark 4.6.9
 npcap
 
+# DISCLAIMER
+You will need to manually modify the file to use the desired network interface.
+just modify the "networkInterface" variable on line 11
+Using Tshark you can find the numeric assignments of your network interfaces
+```Utilize Tshark to list network interfaces
+tshark -D
+
 ```Install the required Python Packages:
 python -m pip install pyshark psutil
 
